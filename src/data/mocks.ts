@@ -1,0 +1,247 @@
+import type { Ato, Categoria, Conversa, Instituicao, Usuario } from "./types";
+
+export const CATEGORIAS: Categoria[] = [
+  "Doação de Alimentos",
+  "Saúde",
+  "Abrigo",
+  "Arrecadação Financeira",
+  "Educação",
+  "Vestuário",
+  "Meio Ambiente",
+];
+
+export const categoriaColor: Record<Categoria, string> = {
+  "Doação de Alimentos": "cat-alimentos",
+  Saúde: "cat-saude",
+  Abrigo: "cat-abrigo",
+  "Arrecadação Financeira": "cat-financeira",
+  Educação: "cat-educacao",
+  Vestuário: "cat-vestuario",
+  "Meio Ambiente": "cat-ambiente",
+};
+
+export const usuarioLogado: Usuario = {
+  id: "u-1",
+  nome: "Marina Albuquerque",
+  tipo: "pessoa_fisica",
+  avatar_url: "https://i.pravatar.cc/200?img=47",
+  papel: "Voluntária • São Paulo, SP",
+};
+
+export const usuarioStats = {
+  atos_publicados: 12,
+  seguindo: 38,
+};
+
+export const instituicoes: Instituicao[] = [
+  {
+    id: "i-1",
+    nome: "Casa do Caminho",
+    tipo: "instituicao",
+    avatar_url: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=200&h=200&fit=crop",
+    papel: "ONG • Acolhimento",
+    verificado: true,
+    razao_social: "Associação Casa do Caminho",
+    area_atuacao: "Acolhimento e Abrigo",
+    status_verificacao: "verificada",
+    seguidores_count: 4820,
+    atos_count: 87,
+    colaboracoes_count: 23,
+    capa_url: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1600&h=400&fit=crop",
+    descricao:
+      "Acolhemos pessoas em situação de vulnerabilidade desde 1998 na zona leste de São Paulo.",
+  },
+  {
+    id: "i-2",
+    nome: "Igreja Batista Esperança",
+    tipo: "instituicao",
+    avatar_url: "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=200&h=200&fit=crop",
+    papel: "Igreja • Comunidade",
+    verificado: true,
+    razao_social: "Igreja Batista Esperança",
+    area_atuacao: "Comunidade e Apoio Social",
+    status_verificacao: "verificada",
+    seguidores_count: 1320,
+    atos_count: 41,
+    colaboracoes_count: 12,
+    capa_url: "https://images.unsplash.com/photo-1493787039806-2edcbe808750?w=1600&h=400&fit=crop",
+    descricao: "Comunidade de fé com forte atuação em ações sociais no bairro do Butantã.",
+  },
+  {
+    id: "i-3",
+    nome: "Verde que te Quero Verde",
+    tipo: "instituicao",
+    avatar_url: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=200&h=200&fit=crop",
+    papel: "ONG • Meio Ambiente",
+    verificado: false,
+    razao_social: "Instituto Verde que te Quero Verde",
+    area_atuacao: "Meio Ambiente",
+    status_verificacao: "pendente",
+    seguidores_count: 612,
+    atos_count: 19,
+    colaboracoes_count: 5,
+    capa_url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&h=400&fit=crop",
+    descricao: "Reflorestamento urbano e mutirões de limpeza em áreas de mananciais.",
+  },
+  {
+    id: "i-4",
+    nome: "Mãos que Cuidam",
+    tipo: "instituicao",
+    avatar_url: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=200&h=200&fit=crop",
+    papel: "ONG • Saúde",
+    verificado: true,
+    razao_social: "Associação Mãos que Cuidam",
+    area_atuacao: "Saúde Comunitária",
+    status_verificacao: "verificada",
+    seguidores_count: 2104,
+    atos_count: 53,
+    colaboracoes_count: 18,
+    capa_url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1600&h=400&fit=crop",
+    descricao: "Atendimentos de saúde itinerantes em comunidades periféricas.",
+  },
+];
+
+export const atos: Ato[] = [
+  {
+    id: "a-1",
+    titulo: "Mutirão de doação de cestas básicas em Heliópolis",
+    descricao:
+      "Vamos distribuir 200 cestas básicas para famílias cadastradas pela comunidade. Precisamos de voluntários para organização e entrega no domingo pela manhã.",
+    categoria: "Doação de Alimentos",
+    tipo_ato: "presencial",
+    foto_url: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1200&h=675&fit=crop",
+    localizacao: "Heliópolis, São Paulo — SP",
+    data_ato: "2026-07-12",
+    status: "Ativo",
+    autor: instituicoes[0],
+    curtidas_count: 184,
+    comentarios_count: 23,
+    compartilhamentos_count: 41,
+  },
+  {
+    id: "a-2",
+    titulo: "Campanha do agasalho — meta de 5.000 peças",
+    descricao:
+      "Arrecadação aberta até 30 de julho. Aceitamos roupas em bom estado, cobertores e calçados. Pontos de coleta em 12 bairros da cidade.",
+    categoria: "Vestuário",
+    tipo_ato: "arrecadacao",
+    foto_url: "https://images.unsplash.com/photo-1489274495757-95c7c837b101?w=1200&h=675&fit=crop",
+    localizacao: "Múltiplos pontos — SP",
+    data_ato: "2026-07-30",
+    status: "Em andamento",
+    autor: instituicoes[1],
+    curtidas_count: 421,
+    comentarios_count: 56,
+    compartilhamentos_count: 132,
+  },
+  {
+    id: "a-3",
+    titulo: "Plantio de 300 mudas nativas na nascente do Rio Pinheiros",
+    descricao:
+      "Mutirão de reflorestamento em parceria com a Subprefeitura. Traga luvas, água e disposição. Café da manhã por conta da galera.",
+    categoria: "Meio Ambiente",
+    tipo_ato: "presencial",
+    foto_url: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200&h=675&fit=crop",
+    localizacao: "Pq. Burle Marx — SP",
+    data_ato: "2026-07-05",
+    status: "Ativo",
+    autor: instituicoes[2],
+    curtidas_count: 96,
+    comentarios_count: 11,
+    compartilhamentos_count: 18,
+  },
+  {
+    id: "a-4",
+    titulo: "Atendimento médico gratuito no Capão Redondo",
+    descricao:
+      "Clínicos gerais, pediatras e dentistas voluntários atenderão a comunidade no sábado. Inscrições pelo WhatsApp da paróquia.",
+    categoria: "Saúde",
+    tipo_ato: "presencial",
+    foto_url: "https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=1200&h=675&fit=crop",
+    localizacao: "Capão Redondo, São Paulo — SP",
+    data_ato: "2026-07-19",
+    status: "Ativo",
+    autor: instituicoes[3],
+    curtidas_count: 312,
+    comentarios_count: 47,
+    compartilhamentos_count: 88,
+  },
+  {
+    id: "a-5",
+    titulo: "Vakinha para reforma do abrigo São Francisco",
+    descricao:
+      "Precisamos arrecadar R$ 28.000 para troca do telhado e pintura. Cada doação aproxima a gente da meta — qualquer valor faz diferença.",
+    categoria: "Arrecadação Financeira",
+    tipo_ato: "arrecadacao",
+    foto_url: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1200&h=675&fit=crop",
+    localizacao: "Vila Madalena — SP",
+    data_ato: "2026-08-15",
+    status: "Em andamento",
+    autor: instituicoes[0],
+    curtidas_count: 78,
+    comentarios_count: 9,
+    compartilhamentos_count: 22,
+  },
+];
+
+export const conversas: Conversa[] = [
+  {
+    id: "c-1",
+    participante: instituicoes[0],
+    ultima_mensagem: "Marina, conseguimos confirmar mais 30 cestas! Você ainda topa ajudar?",
+    timestamp: "há 12 min",
+    nao_lidas: 2,
+    ato_referencia: atos[0],
+    mensagens: [
+      {
+        id: "m-1",
+        autor_id: "i-1",
+        texto: "Oi Marina, tudo bem? Vi que você curtiu o ato.",
+        timestamp: "10:02",
+      },
+      {
+        id: "m-2",
+        autor_id: "u-1",
+        texto: "Oi! Tudo sim. Posso ajudar na organização sim 🙌",
+        timestamp: "10:14",
+      },
+      {
+        id: "m-3",
+        autor_id: "i-1",
+        texto: "Marina, conseguimos confirmar mais 30 cestas! Você ainda topa ajudar?",
+        timestamp: "10:39",
+      },
+    ],
+  },
+  {
+    id: "c-2",
+    participante: instituicoes[3],
+    ultima_mensagem: "Bom dia! Compartilhamos o link do formulário no seu e-mail.",
+    timestamp: "há 2 h",
+    nao_lidas: 0,
+    ato_referencia: atos[3],
+    mensagens: [
+      {
+        id: "m-1",
+        autor_id: "i-4",
+        texto: "Bom dia! Compartilhamos o link do formulário no seu e-mail.",
+        timestamp: "08:11",
+      },
+    ],
+  },
+  {
+    id: "c-3",
+    participante: instituicoes[2],
+    ultima_mensagem: "Valeu pela presença no último mutirão 💚",
+    timestamp: "ontem",
+    nao_lidas: 0,
+    mensagens: [
+      {
+        id: "m-1",
+        autor_id: "i-3",
+        texto: "Valeu pela presença no último mutirão 💚",
+        timestamp: "ontem 18:40",
+      },
+    ],
+  },
+];
