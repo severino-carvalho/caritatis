@@ -1,4 +1,13 @@
-import type { Ato, Categoria, Conversa, Instituicao, Usuario } from "./types";
+import type {
+  Ato,
+  Categoria,
+  CategoriaAPI,
+  Conversa,
+  Instituicao,
+  LeaderboardData,
+  PostagemResponse,
+  Usuario,
+} from "./types";
 
 export const CATEGORIAS: Categoria[] = [
   "Doação de Alimentos",
@@ -25,7 +34,7 @@ export const usuarioLogado: Usuario = {
   nome: "Marina Albuquerque",
   tipo: "pessoa_fisica",
   avatar_url: "https://i.pravatar.cc/200?img=47",
-  papel: "Voluntária • São Paulo, SP",
+  papel: "Voluntária • Natal, RN",
 };
 
 export const usuarioStats = {
@@ -110,7 +119,7 @@ export const atos: Ato[] = [
     categoria: "Doação de Alimentos",
     tipo_ato: "presencial",
     foto_url: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1200&h=675&fit=crop",
-    localizacao: "Heliópolis, São Paulo — SP",
+    localizacao: "Natal, RN",
     data_ato: "2026-07-12",
     status: "Ativo",
     autor: instituicoes[0],
@@ -126,7 +135,7 @@ export const atos: Ato[] = [
     categoria: "Vestuário",
     tipo_ato: "arrecadacao",
     foto_url: "https://images.unsplash.com/photo-1489274495757-95c7c837b101?w=1200&h=675&fit=crop",
-    localizacao: "Múltiplos pontos — SP",
+    localizacao: "Múltiplos pontos — RN",
     data_ato: "2026-07-30",
     status: "Em andamento",
     autor: instituicoes[1],
@@ -142,7 +151,7 @@ export const atos: Ato[] = [
     categoria: "Meio Ambiente",
     tipo_ato: "presencial",
     foto_url: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200&h=675&fit=crop",
-    localizacao: "Pq. Burle Marx — SP",
+    localizacao: "Pq. Burle Marx — RN",
     data_ato: "2026-07-05",
     status: "Ativo",
     autor: instituicoes[2],
@@ -158,7 +167,7 @@ export const atos: Ato[] = [
     categoria: "Saúde",
     tipo_ato: "presencial",
     foto_url: "https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=1200&h=675&fit=crop",
-    localizacao: "Capão Redondo, São Paulo — SP",
+    localizacao: "Natal, RN",
     data_ato: "2026-07-19",
     status: "Ativo",
     autor: instituicoes[3],
@@ -174,13 +183,191 @@ export const atos: Ato[] = [
     categoria: "Arrecadação Financeira",
     tipo_ato: "arrecadacao",
     foto_url: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1200&h=675&fit=crop",
-    localizacao: "Vila Madalena — SP",
+    localizacao: "Vila Madalena — RN",
     data_ato: "2026-08-15",
     status: "Em andamento",
     autor: instituicoes[0],
     curtidas_count: 78,
     comentarios_count: 9,
     compartilhamentos_count: 22,
+  },
+];
+
+export const mockLeaderboard: LeaderboardData = {
+  top5: [
+    {
+      id: "lb-1",
+      nome: "Rafael Nogueira",
+      avatarUrl: "https://i.pravatar.cc/40?u=lb-1",
+      pontos_total: 1240,
+      ofensiva_atual: 21,
+      posicao: 1,
+    },
+    {
+      id: "lb-2",
+      nome: "Beatriz Carvalho",
+      avatarUrl: "https://i.pravatar.cc/40?u=lb-2",
+      pontos_total: 980,
+      ofensiva_atual: 17,
+      posicao: 2,
+    },
+    {
+      id: "lb-3",
+      nome: "Thiago Mendes",
+      avatarUrl: "https://i.pravatar.cc/40?u=lb-3",
+      pontos_total: 760,
+      ofensiva_atual: 11,
+      posicao: 3,
+    },
+    {
+      id: "lb-4",
+      nome: "Juliana Pereira",
+      avatarUrl: "https://i.pravatar.cc/40?u=lb-4",
+      pontos_total: 520,
+      ofensiva_atual: 6,
+      posicao: 4,
+    },
+    {
+      id: "lb-5",
+      nome: "Gustavo Andrade",
+      avatarUrl: "https://i.pravatar.cc/40?u=lb-5",
+      pontos_total: 380,
+      ofensiva_atual: 3,
+      posicao: 5,
+    },
+  ],
+  colaboradorLogado: {
+    id: "u-1",
+    nome: "Marina Albuquerque",
+    avatarUrl: "https://i.pravatar.cc/40?u=u-1",
+    pontos_total: 94,
+    ofensiva_atual: 2,
+    posicao: 12,
+  },
+};
+
+// --- Feed mockado (fallback quando o backend não está disponível) ---
+
+export const categoriasAPI: CategoriaAPI[] = [
+  { id: 1, nome: "Doação de Alimentos", icone: "🍲" },
+  { id: 2, nome: "Saúde", icone: "🩺" },
+  { id: 3, nome: "Abrigo", icone: "🏠" },
+  { id: 4, nome: "Arrecadação Financeira", icone: "💰" },
+  { id: 5, nome: "Educação", icone: "📚" },
+  { id: 6, nome: "Vestuário", icone: "🧥" },
+  { id: 7, nome: "Meio Ambiente", icone: "🌱" },
+];
+
+export const mockFeed: PostagemResponse[] = [
+  {
+    id: 1,
+    titulo: "Mutirão de doação de cestas básicas em Heliópolis",
+    descricao:
+      "Vamos distribuir 200 cestas básicas para famílias cadastradas pela comunidade. Precisamos de voluntários para organização e entrega no domingo pela manhã.",
+    categoria: categoriasAPI[0],
+    tipoPostagem: "presencial",
+    fotoUrl: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1200&h=675&fit=crop",
+    localizacao: "Natal, RN",
+    dataPostagem: "2026-07-12",
+    status: "ativo",
+    instituicao: {
+      id: 1,
+      razaoSocial: "Associação Casa do Caminho",
+      logoUrl: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=200&h=200&fit=crop",
+      statusVerificacao: "verificada",
+    },
+    curtidasCount: 184,
+    comentariosCount: 23,
+    compartilhamentosCount: 41,
+    criadoEm: "2026-06-24T09:30:00Z",
+  },
+  {
+    id: 2,
+    titulo: "Campanha do agasalho — meta de 5.000 peças",
+    descricao:
+      "Arrecadação aberta até 30 de julho. Aceitamos roupas em bom estado, cobertores e calçados. Pontos de coleta em 12 bairros da cidade.",
+    categoria: categoriasAPI[5],
+    tipoPostagem: "arrecadacao",
+    fotoUrl: "https://images.unsplash.com/photo-1489274495757-95c7c837b101?w=1200&h=675&fit=crop",
+    localizacao: "Múltiplos pontos — RN",
+    dataPostagem: "2026-07-30",
+    status: "em_andamento",
+    instituicao: {
+      id: 2,
+      razaoSocial: "Igreja Batista Esperança",
+      logoUrl: "https://images.unsplash.com/photo-1507692049790-de58290a4334?w=200&h=200&fit=crop",
+      statusVerificacao: "verificada",
+    },
+    curtidasCount: 421,
+    comentariosCount: 56,
+    compartilhamentosCount: 132,
+    criadoEm: "2026-06-23T14:10:00Z",
+  },
+  {
+    id: 3,
+    titulo: "Plantio de 300 mudas nativas na nascente do Rio Pinheiros",
+    descricao:
+      "Mutirão de reflorestamento em parceria com a Subprefeitura. Traga luvas, água e disposição. Café da manhã por conta da galera.",
+    categoria: categoriasAPI[6],
+    tipoPostagem: "presencial",
+    fotoUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1200&h=675&fit=crop",
+    localizacao: "Pq. Burle Marx — RN",
+    dataPostagem: "2026-07-05",
+    status: "ativo",
+    instituicao: {
+      id: 3,
+      razaoSocial: "Instituto Verde que te Quero Verde",
+      logoUrl: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=200&h=200&fit=crop",
+      statusVerificacao: "pendente",
+    },
+    curtidasCount: 96,
+    comentariosCount: 11,
+    compartilhamentosCount: 18,
+    criadoEm: "2026-06-22T08:00:00Z",
+  },
+  {
+    id: 4,
+    titulo: "Atendimento médico gratuito no Capão Redondo",
+    descricao:
+      "Clínicos gerais, pediatras e dentistas voluntários atenderão a comunidade no sábado. Inscrições pelo WhatsApp da paróquia.",
+    categoria: categoriasAPI[1],
+    tipoPostagem: "presencial",
+    fotoUrl: "https://images.unsplash.com/photo-1666214280557-f1b5022eb634?w=1200&h=675&fit=crop",
+    localizacao: "Natal, RN",
+    dataPostagem: "2026-07-19",
+    status: "ativo",
+    instituicao: {
+      id: 4,
+      razaoSocial: "Associação Mãos que Cuidam",
+      logoUrl: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=200&h=200&fit=crop",
+      statusVerificacao: "verificada",
+    },
+    curtidasCount: 312,
+    comentariosCount: 47,
+    compartilhamentosCount: 88,
+    criadoEm: "2026-06-21T11:45:00Z",
+  },
+  {
+    id: 5,
+    titulo: "Vakinha para reforma do abrigo São Francisco",
+    descricao:
+      "Precisamos arrecadar R$ 28.000 para troca do telhado e pintura. Cada doação aproxima a gente da meta — qualquer valor faz diferença.",
+    categoria: categoriasAPI[3],
+    tipoPostagem: "arrecadacao",
+    fotoUrl: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=1200&h=675&fit=crop",
+    localizacao: "Vila Madalena — RN",
+    dataPostagem: "2026-08-15",
+    status: "em_andamento",
+    instituicao: {
+      id: 1,
+      razaoSocial: "Associação Casa do Caminho",
+      logoUrl: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=200&h=200&fit=crop",
+      statusVerificacao: "verificada",
+    },
+    curtidasCount: 78,
+    comentariosCount: 9,
+    compartilhamentosCount: 22,
+    criadoEm: "2026-06-20T16:20:00Z",
   },
 ];
 

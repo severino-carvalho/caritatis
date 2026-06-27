@@ -1,13 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { Home, Compass, Bookmark, User } from "lucide-react";
+import { Bookmark, Compass, Home, MapPin, User } from "lucide-react";
 import { Avatar } from "@/components/ui/ReuniAvatar";
-import { usuarioLogado, usuarioStats } from "@/data/mocks";
+import { atos, instituicoes, usuarioLogado, usuarioStats } from "@/data/mocks";
 import { usePerfil } from "@/hooks/usePerfil";
 import { ApenasInstituicao } from "@/components/guards/ApenasInstituicao";
 import { ApenasColaborador } from "@/components/guards/ApenasColaborador";
+import { VerifiedBadge } from "@/components/ui/ReuniVerifiedBadge.tsx";
+import { Button } from "@/components/ui/button.tsx";
 
 type NavItem = {
-  to: "/" | "/publicar" | "/instituicao/$id";
+  to: string;
   params?: { id: string };
   label: string;
   icon: typeof Home;
@@ -38,6 +40,9 @@ function NavLink({ item }: { item: NavItem }) {
 
 export function Sidebar() {
   const { isInstituicao } = usePerfil();
+
+  const sugestoes = instituicoes.slice(0, 3);
+  const proximos = atos.slice(0, 2);
 
   return (
     <aside className="hidden lg:block w-60 shrink-0">
@@ -83,6 +88,61 @@ export function Sidebar() {
           </ApenasColaborador>
           <NavLink item={navComum[2]} />
         </nav>
+
+        {!isInstituicao && (
+          <>
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <h3 className="font-display text-sm font-bold text-foreground">
+                Instituições para seguir
+              </h3>
+              <ul className="mt-4 space-y-4">
+                {sugestoes.map((i) => (
+                  <li key={i.id} className="flex items-center gap-3">
+                    <Link to="/instituicao/$id" params={{ id: i.id }}>
+                      <Avatar src={i.avatar_url} alt={i.razao_social} size={40} shape="rounded" />
+                    </Link>
+                    <div className="min-w-0 flex-1">
+                      <Link
+                        to="/instituicao/$id"
+                        params={{ id: i.id }}
+                        className="flex items-center gap-1 truncate text-sm font-semibold text-foreground hover:text-primary"
+                      >
+                        <span className="truncate">{i.nome}</span>
+                        {i.status_verificacao === "verificada" && (
+                          <span className="shrink-0">
+                            <VerifiedBadge />
+                          </span>
+                        )}
+                      </Link>
+                      <div className="truncate text-xs text-muted-foreground">{i.area_atuacao}</div>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      Seguir
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <h3 className="font-display text-sm font-bold text-foreground">
+                Atos próximos a você
+              </h3>
+              <ul className="mt-4 space-y-4">
+                {proximos.map((a) => (
+                  <li key={a.id} className="space-y-1.5">
+                    <div className="text-sm font-semibold text-foreground line-clamp-2">
+                      {a.titulo}
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <MapPin size={12} aria-hidden /> {a.localizacao}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
       </div>
     </aside>
   );

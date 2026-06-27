@@ -3,7 +3,7 @@ import { Bookmark, Home, PlusCircle, User } from "lucide-react";
 import { ApenasInstituicao } from "@/components/guards/ApenasInstituicao";
 
 type BottomItem = {
-  to: "/" | "/publicar" | "/instituicao/$id";
+  to: string;
   params?: { id: string };
   label: string;
   icon: typeof Home;
@@ -34,8 +34,9 @@ const meus: BottomItem = {
   icon: Bookmark,
   exact: false,
 };
+
 const perfil: BottomItem = {
-  to: "/instituicao/$id",
+  to: "/perfil/$id",
   params: { id: "i-1" },
   label: "Perfil",
   icon: User,

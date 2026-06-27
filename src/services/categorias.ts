@@ -1,6 +1,12 @@
 import type { CategoriaAPI } from "@/data/types";
+import { categoriasAPI } from "@/data/mocks";
 import { apiFetch } from "./api";
 
-export function fetchCategorias(): Promise<CategoriaAPI[]> {
-  return apiFetch<CategoriaAPI[]>("/api/categorias");
+export async function fetchCategorias(): Promise<CategoriaAPI[]> {
+  try {
+    return await apiFetch<CategoriaAPI[]>("/api/categorias");
+  } catch {
+    // Backend indisponível: usa as categorias mockadas como fallback.
+    return categoriasAPI;
+  }
 }

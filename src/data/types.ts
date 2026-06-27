@@ -159,3 +159,19 @@ export interface Page<T> {
   totalElements: number;
   number: number; // página atual (0-based)
 }
+
+// --- Gamificação: leaderboard (exclusivo do colaborador) ---
+
+export interface LeaderboardEntry {
+  id: string;
+  nome: string;
+  avatarUrl: string;
+  pontos_total: number;
+  ofensiva_atual: number;
+  posicao: number;
+}
+
+export interface LeaderboardData {
+  top5: LeaderboardEntry[];
+  colaboradorLogado: LeaderboardEntry;
+}
