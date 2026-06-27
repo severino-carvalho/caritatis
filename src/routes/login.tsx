@@ -5,7 +5,7 @@ import { login } from "@/services/auth";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
-    meta: [{ title: "Entrar — reuni" }],
+    meta: [{ title: "Entrar — Caritatis" }],
   }),
   component: LoginPage,
 });
@@ -35,7 +35,7 @@ function LoginPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-gradient-to-br from-primary to-amber-600 p-12 text-white">
-        <div className="font-display text-2xl font-bold">Reuni</div>
+        <div className="font-display text-2xl font-bold">Caritatis</div>
         <div>
           <h1 className="font-display text-4xl font-bold leading-tight">
             Conecte-se a ações que transformam vidas
@@ -53,17 +53,17 @@ function LoginPage() {
             ))}
           </ul>
         </div>
-        <p className="text-sm text-white/60">© {new Date().getFullYear()} Reuni</p>
+        <p className="text-sm text-white/60">© {new Date().getFullYear()} Caritatis</p>
       </div>
 
       <div className="flex flex-1 items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 flex items-center gap-2 lg:hidden">
             <span className="grid h-9 w-9 place-items-center rounded-[12px] bg-primary font-display text-lg font-bold text-primary-foreground">
-              r
+              C
             </span>
             <span className="font-display text-lg font-bold tracking-tight text-foreground">
-              reuni
+              Caritatis
             </span>
           </div>
 

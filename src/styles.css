@@ -55,7 +55,7 @@
 
   /* Warm earth tones */
   --background: oklch(0.975 0.012 80);          /* #FAF7F2 warm off-white */
-  --foreground: oklch(0.205 0.012 50);          /* #1C1917 near black */
+  --foreground: #1C1917;          /* #1C1917 near black */
   --surface: oklch(0.995 0.006 90);             /* cream white */
   --surface-2: oklch(0.955 0.014 78);
   --card: oklch(0.995 0.006 90);

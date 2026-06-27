@@ -21,10 +21,10 @@ export function Header() {
             aria-hidden
             className="grid h-9 w-9 place-items-center rounded-[12px] bg-primary text-primary-foreground font-display text-lg font-bold"
           >
-            r
+            C
           </span>
           <span className="hidden font-display text-lg font-bold tracking-tight text-foreground sm:inline">
-            reuni
+            Caritatis
           </span>
         </Link>
 

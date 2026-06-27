@@ -5,7 +5,7 @@ import { registrarColaborador, registrarInstituicao } from "@/services/auth";
 
 export const Route = createFileRoute("/registro")({
   head: () => ({
-    meta: [{ title: "Cadastro — reuni" }],
+    meta: [{ title: "Cadastro — Caritatis" }],
   }),
   component: RegistroPage,
 });
@@ -18,6 +18,25 @@ const BULLETS = [
   "Publique e divulgue seus atos sociais",
 ];
 
+function mascararCpf(valor: string): string {
+  return valor
+    .replace(/\D/g, "")
+    .slice(0, 11)
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
+
+function mascararCnpj(valor: string): string {
+  return valor
+    .replace(/\D/g, "")
+    .slice(0, 14)
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
+    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+}
+
 const inputClass =
   "h-11 w-full rounded-xl border border-border bg-surface px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50";
 
@@ -26,7 +45,7 @@ const labelClass = "mb-1.5 block text-sm font-semibold text-foreground";
 function PainelEsquerdo() {
   return (
     <div className="hidden lg:flex lg:w-1/2 flex-col justify-between bg-gradient-to-br from-primary to-amber-600 p-12 text-white">
-      <div className="font-display text-2xl font-bold">Reuni</div>
+      <div className="font-display text-2xl font-bold">Caritatis</div>
       <div>
         <h1 className="font-display text-4xl font-bold leading-tight">
           Conecte-se a ações que transformam vidas
@@ -40,7 +59,7 @@ function PainelEsquerdo() {
           ))}
         </ul>
       </div>
-      <p className="text-sm text-white/60">© {new Date().getFullYear()} Reuni</p>
+      <p className="text-sm text-white/60">© {new Date().getFullYear()} Caritatis</p>
     </div>
   );
 }
@@ -49,9 +68,9 @@ function LogoMobile() {
   return (
     <div className="mb-8 flex items-center gap-2 lg:hidden">
       <span className="grid h-9 w-9 place-items-center rounded-[12px] bg-primary font-display text-lg font-bold text-primary-foreground">
-        r
+        C
       </span>
-      <span className="font-display text-lg font-bold tracking-tight text-foreground">reuni</span>
+      <span className="font-display text-lg font-bold tracking-tight text-foreground">Caritatis</span>
     </div>
   );
 }
@@ -195,7 +214,7 @@ function RegistroPage() {
                     id="cpf"
                     type="text"
                     value={cpf}
-                    onChange={(e) => setCpf(e.target.value)}
+                    onChange={(e) => setCpf(mascararCpf(e.target.value))}
                     required
                     disabled={carregando}
                     placeholder="000.000.000-00"
@@ -285,7 +304,7 @@ function RegistroPage() {
                     id="cnpj"
                     type="text"
                     value={documento}
-                    onChange={(e) => setDocumento(e.target.value)}
+                    onChange={(e) => setDocumento(mascararCnpj(e.target.value))}
                     required
                     disabled={carregando}
                     placeholder="00.000.000/0000-00"

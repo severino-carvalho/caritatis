@@ -105,3 +105,57 @@ export interface RegistroInstituicaoRequest {
   senha: string;
   localizacao?: string;
 }
+
+// --- DTOs do backend: postagens, categorias e interações ---
+
+export interface CategoriaAPI {
+  id: number;
+  nome: string;
+  icone: string;
+}
+
+export type TipoPostagem = "presencial" | "arrecadacao";
+export type StatusPostagem = "ativo" | "em_andamento" | "encerrado";
+export type StatusVerificacao = "pendente" | "verificada" | "rejeitada";
+
+export interface InstituicaoResumo {
+  id: number;
+  razaoSocial: string;
+  logoUrl: string | null;
+  statusVerificacao: StatusVerificacao;
+}
+
+export interface PostagemResponse {
+  id: number;
+  titulo: string;
+  descricao: string;
+  categoria: CategoriaAPI;
+  tipoPostagem: TipoPostagem;
+  fotoUrl: string | null;
+  localizacao: string | null;
+  dataPostagem: string | null;
+  status: StatusPostagem;
+  instituicao: InstituicaoResumo;
+  curtidasCount: number;
+  comentariosCount: number;
+  compartilhamentosCount: number;
+  criadoEm: string;
+}
+
+export interface ComentarioResponse {
+  id: number;
+  conteudo: string;
+  criadoEm: string;
+  autor: {
+    id: number;
+    nome: string;
+    avatarUrl: string | null;
+  };
+}
+
+export interface Page<T> {
+  content: T[];
+  totalPages: number;
+  totalElements: number;
+  number: number; // página atual (0-based)
+}

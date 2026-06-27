@@ -4,6 +4,7 @@ import { Avatar } from "@/components/ui/ReuniAvatar";
 import { usuarioLogado, usuarioStats } from "@/data/mocks";
 import { usePerfil } from "@/hooks/usePerfil";
 import { ApenasInstituicao } from "@/components/guards/ApenasInstituicao";
+import { ApenasColaborador } from "@/components/guards/ApenasColaborador";
 
 type NavItem = {
   to: "/" | "/publicar" | "/instituicao/$id";
@@ -77,9 +78,10 @@ export function Sidebar() {
           <ApenasInstituicao>
             <NavLink item={navPublicar} />
           </ApenasInstituicao>
-          {navComum.slice(1).map((item) => (
-            <NavLink key={item.label} item={item} />
-          ))}
+          <ApenasColaborador>
+            <NavLink item={navComum[1]} />
+          </ApenasColaborador>
+          <NavLink item={navComum[2]} />
         </nav>
       </div>
     </aside>

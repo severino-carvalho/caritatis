@@ -1,14 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Image, MapPin, Send } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
-import { AtoCard } from "@/components/AtoCard";
+import { PostagemCard } from "@/components/PostagemCard";
 import { Avatar } from "@/components/ui/ReuniAvatar";
 import { Button } from "@/components/ui/ReuniButton";
-import { CategoryPill } from "@/components/ui/ReuniCategoryPill";
 import { ApenasInstituicao } from "@/components/guards/ApenasInstituicao";
-import { atos, CATEGORIAS, usuarioLogado } from "@/data/mocks";
-import type { Categoria } from "@/data/types";
+import { fetchCategorias } from "@/services/categorias";
+import { fetchFeed } from "@/services/postagens";
+import { usuarioLogado } from "@/data/mocks";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,17 +24,20 @@ export const Route = createFileRoute("/")({
 });
 
 function FeedPage() {
-  const [filtro, setFiltro] = useState<Categoria | null>(null);
+  const navigate = useNavigate();
+  const [filtroCategoria, setFiltroCategoria] = useState<number | null>(null);
 
-  const categorias = useMemo(() => {
-    const usadas = new Set(atos.map((a) => a.categoria));
-    return CATEGORIAS.filter((c) => usadas.has(c));
-  }, []);
+  const { data: categorias = [] } = useQuery({
+    queryKey: ["categorias"],
+    queryFn: fetchCategorias,
+  });
 
-  const lista = useMemo(
-    () => (filtro ? atos.filter((a) => a.categoria === filtro) : atos),
-    [filtro],
-  );
+  const { data: feedData, isLoading, isError, error } = useQuery({
+    queryKey: ["feed", filtroCategoria],
+    queryFn: () => fetchFeed({ categoriaId: filtroCategoria ?? undefined }),
+  });
+
+  const postagens = feedData?.content ?? [];
 
   return (
     <AppShell>
@@ -64,7 +68,7 @@ function FeedPage() {
                       <MapPin size={14} aria-hidden /> Local
                     </button>
                   </div>
-                  <Button size="sm">
+                  <Button size="sm" onClick={() => navigate({ to: "/publicar" })}>
                     <Send size={14} aria-hidden /> Publicar
                   </Button>
                 </div>
@@ -77,32 +81,54 @@ function FeedPage() {
         <section className="-mx-4 px-4 md:mx-0 md:px-0">
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
             <button
-              onClick={() => setFiltro(null)}
+              onClick={() => setFiltroCategoria(null)}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                filtro === null
+                filtroCategoria === null
                   ? "bg-foreground text-background"
                   : "bg-surface border border-border text-foreground/80 hover:text-foreground"
               }`}
             >
               Todas
             </button>
-            {categorias.map((c) => (
-              <CategoryPill
-                key={c}
-                categoria={c}
-                active={filtro === c}
-                onClick={() => setFiltro(filtro === c ? null : c)}
-              />
-            ))}
+            {categorias.map((c) => {
+              const active = filtroCategoria === c.id;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => setFiltroCategoria(active ? null : c.id)}
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
+                    active
+                      ? "bg-foreground text-background"
+                      : "bg-surface border border-border text-foreground/80 hover:text-foreground"
+                  }`}
+                >
+                  {c.icone && <span aria-hidden>{c.icone}</span>}
+                  {c.nome}
+                </button>
+              );
+            })}
           </div>
         </section>
 
         {/* Lista */}
         <section className="space-y-4">
-          {lista.map((ato) => (
-            <AtoCard key={ato.id} ato={ato} />
+          {isLoading &&
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="animate-pulse bg-muted rounded-2xl h-48" />
+            ))}
+
+          {!isLoading && isError && (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
+              Não foi possível carregar o feed.
+              {error instanceof Error && error.message ? ` (${error.message})` : ""}
+            </div>
+          )}
+
+          {!isLoading && !isError && postagens.map((postagem) => (
+            <PostagemCard key={postagem.id} postagem={postagem} />
           ))}
-          {lista.length === 0 && (
+
+          {!isLoading && !isError && postagens.length === 0 && (
             <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
               Nenhum ato nesta categoria ainda.
             </div>

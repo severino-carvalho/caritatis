@@ -1,11 +1,13 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useState } from "react";
-import { Calendar, HandHeart, ImagePlus, MapPin, Search, Sprout } from "lucide-react";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Calendar, HandHeart, ImagePlus, MapPin, Sprout } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
-import { AtoCard } from "@/components/AtoCard";
+import { PostagemCard } from "@/components/PostagemCard";
 import { Button } from "@/components/ui/ReuniButton";
-import { atos, CATEGORIAS } from "@/data/mocks";
-import type { Categoria, TipoAto } from "@/data/types";
+import { fetchCategorias } from "@/services/categorias";
+import { criarPostagem } from "@/services/postagens";
+import type { PostagemResponse, TipoPostagem } from "@/data/types";
 
 export const Route = createFileRoute("/publicar")({
   beforeLoad: () => {
@@ -24,13 +26,74 @@ export const Route = createFileRoute("/publicar")({
 const STEPS = ["Básico", "Detalhes", "Revisão"] as const;
 
 function PublicarPage() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const [step, setStep] = useState(0);
-  const [tipo, setTipo] = useState<TipoAto | null>(null);
+  const [tipo, setTipo] = useState<TipoPostagem | null>(null);
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [categoria, setCategoria] = useState<Categoria | "">("");
+  const [categoriaId, setCategoriaId] = useState<number | "">("");
+  const [foto, setFoto] = useState<File | null>(null);
+  const [localizacao, setLocalizacao] = useState("");
+  const [dataPostagem, setDataPostagem] = useState("");
 
-  const exemplo = atos[0];
+  const { data: categorias = [] } = useQuery({
+    queryKey: ["categorias"],
+    queryFn: fetchCategorias,
+  });
+
+  // Pré-visualização da foto selecionada
+  const fotoPreviewUrl = useMemo(() => (foto ? URL.createObjectURL(foto) : null), [foto]);
+  useEffect(() => {
+    return () => {
+      if (fotoPreviewUrl) URL.revokeObjectURL(fotoPreviewUrl);
+    };
+  }, [fotoPreviewUrl]);
+
+  const formValido = tipo !== null && titulo.trim() !== "" && descricao.trim() !== "" && categoriaId !== "";
+
+  const publicar = useMutation({
+    mutationFn: () => {
+      const formData = new FormData();
+      formData.append("titulo", titulo.trim());
+      formData.append("descricao", descricao.trim());
+      formData.append("categoriaId", String(categoriaId));
+      formData.append("tipoPostagem", tipo as TipoPostagem);
+      if (localizacao.trim()) formData.append("localizacao", localizacao.trim());
+      if (dataPostagem) formData.append("dataPostagem", dataPostagem);
+      if (foto) formData.append("foto", foto);
+      return criarPostagem(formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["feed"] });
+      navigate({ to: "/" });
+    },
+  });
+
+  const categoriaSelecionada = categorias.find((c) => c.id === categoriaId);
+
+  const preview: PostagemResponse = {
+    id: -1,
+    titulo: titulo.trim() || "Título do seu ato",
+    descricao: descricao.trim() || "A descrição do ato aparecerá aqui.",
+    categoria: categoriaSelecionada ?? { id: 0, nome: "Categoria", icone: "" },
+    tipoPostagem: tipo ?? "presencial",
+    fotoUrl: fotoPreviewUrl,
+    localizacao: localizacao.trim() || null,
+    dataPostagem: dataPostagem || null,
+    status: "ativo",
+    instituicao: {
+      id: 0,
+      razaoSocial: "Sua instituição",
+      logoUrl: null,
+      statusVerificacao: "verificada",
+    },
+    curtidasCount: 0,
+    comentariosCount: 0,
+    compartilhamentosCount: 0,
+    criadoEm: new Date().toISOString(),
+  };
 
   return (
     <AppShell rightRail={false}>
@@ -120,14 +183,16 @@ function PublicarPage() {
               <Field label="Categoria">
                 <div className="relative">
                   <select
-                    value={categoria}
-                    onChange={(e) => setCategoria(e.target.value as Categoria)}
+                    value={categoriaId}
+                    onChange={(e) =>
+                      setCategoriaId(e.target.value === "" ? "" : Number(e.target.value))
+                    }
                     className="h-11 w-full appearance-none rounded-xl border border-border bg-surface px-4 pr-10 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <option value="">Selecione uma categoria</option>
-                    {CATEGORIAS.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
+                    {categorias.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.nome}
                       </option>
                     ))}
                   </select>
@@ -148,10 +213,15 @@ function PublicarPage() {
                 <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-surface px-6 py-10 text-center text-sm text-muted-foreground hover:bg-accent">
                   <ImagePlus size={28} aria-hidden />
                   <span className="font-medium text-foreground">
-                    Arraste uma foto ou clique para enviar
+                    {foto ? foto.name : "Arraste uma foto ou clique para enviar"}
                   </span>
                   <span className="text-xs">JPG ou PNG até 8MB</span>
-                  <input type="file" accept="image/*" className="sr-only" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={(e) => setFoto(e.target.files?.[0] ?? null)}
+                  />
                 </label>
               </Field>
 
@@ -163,6 +233,8 @@ function PublicarPage() {
                     className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
                   />
                   <input
+                    value={localizacao}
+                    onChange={(e) => setLocalizacao(e.target.value)}
                     placeholder="Endereço ou ponto de referência"
                     className="h-11 w-full rounded-xl border border-border bg-surface pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
@@ -178,21 +250,9 @@ function PublicarPage() {
                   />
                   <input
                     type="date"
+                    value={dataPostagem}
+                    onChange={(e) => setDataPostagem(e.target.value)}
                     className="h-11 w-full rounded-xl border border-border bg-surface pl-10 pr-4 text-sm text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  />
-                </div>
-              </Field>
-
-              <Field label="Instituições colaboradoras">
-                <div className="relative">
-                  <Search
-                    size={16}
-                    aria-hidden
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground"
-                  />
-                  <input
-                    placeholder="Buscar instituições para convidar..."
-                    className="h-11 w-full rounded-xl border border-border bg-surface pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   />
                 </div>
               </Field>
@@ -204,10 +264,30 @@ function PublicarPage() {
               <p className="text-sm text-muted-foreground">
                 Confira como seu ato aparecerá no feed antes de publicar.
               </p>
-              <AtoCard ato={exemplo} />
+              <PostagemCard postagem={preview} />
+
+              {!formValido && (
+                <p className="rounded-xl bg-muted px-4 py-3 text-sm text-muted-foreground">
+                  Preencha tipo, título, descrição e categoria (passo 1) antes de publicar.
+                </p>
+              )}
+
+              {publicar.isError && (
+                <p className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  {publicar.error instanceof Error
+                    ? publicar.error.message
+                    : "Não foi possível publicar o ato."}
+                </p>
+              )}
+
               <div className="flex flex-col-reverse items-stretch gap-2 sm:flex-row sm:items-center sm:justify-end">
-                <Button variant="ghost">Salvar rascunho</Button>
-                <Button size="lg">Publicar Ato</Button>
+                <Button
+                  size="lg"
+                  disabled={!formValido || publicar.isPending}
+                  onClick={() => publicar.mutate()}
+                >
+                  {publicar.isPending ? "Publicando..." : "Publicar Ato"}
+                </Button>
               </div>
             </div>
           )}
