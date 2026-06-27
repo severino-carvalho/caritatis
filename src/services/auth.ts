@@ -6,7 +6,7 @@ import type {
   UsuarioResponse,
 } from "@/data/types";
 
-const BASE_URL = "http://localhost:8080/api/auth";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const TOKEN_KEY = "reuni_token";
 const USER_KEY = "reuni_user";
 const isBrowser = typeof window !== "undefined";
@@ -55,7 +55,7 @@ async function extrairMensagemErro(res: Response): Promise<string> {
 }
 
 export async function login(data: LoginRequest): Promise<AuthResponse> {
-  const res = await fetch(`${BASE_URL}/login`, {
+  const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -69,7 +69,7 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 export async function registrarColaborador(
   data: RegistroColaboradorRequest,
 ): Promise<AuthResponse> {
-  const res = await fetch(`${BASE_URL}/registro/colaborador`, {
+  const res = await fetch(`${BASE_URL}/auth/registro/colaborador`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -83,7 +83,7 @@ export async function registrarColaborador(
 export async function registrarInstituicao(
   data: RegistroInstituicaoRequest,
 ): Promise<AuthResponse> {
-  const res = await fetch(`${BASE_URL}/registro/instituicao`, {
+  const res = await fetch(`${BASE_URL}/auth/registro/instituicao`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),

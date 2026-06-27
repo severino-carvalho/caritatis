@@ -16,6 +16,11 @@ dist-ssr
 .nitro
 *.local
 
+# Variáveis de ambiente locais (já cobertas por *.local, explícito por clareza)
+.env
+.env.local
+.env.*.local
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
