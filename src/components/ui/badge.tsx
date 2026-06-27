@@ -11,4 +11,3 @@ function Badge({ className, variant, ...props }: BadgeProps) {
 }
 
 export { Badge };
-export { badgeVariants } from "./badge-variants";

@@ -3,6 +3,7 @@ import type { Ato, Instituicao } from "@/data/types";
 import { Avatar } from "./ui/ReuniAvatar";
 import { CategoryPill } from "./ui/ReuniCategoryPill";
 import { VerifiedBadge } from "./ui/ReuniVerifiedBadge";
+import { ApenasColaborador } from "./guards/ApenasColaborador";
 import { cn } from "@/lib/utils";
 
 function formatDate(iso: string) {
@@ -104,23 +105,25 @@ export function AtoCard({ ato, compact }: Props) {
         </div>
 
         {/* Actions */}
-        <div className="mt-4 flex items-center gap-1 border-t border-border pt-3 -mb-1">
-          <ActionBtn
-            icon={<Heart size={16} aria-hidden />}
-            label="Curtir"
-            count={ato.curtidas_count}
-          />
-          <ActionBtn
-            icon={<MessageCircle size={16} aria-hidden />}
-            label="Comentar"
-            count={ato.comentarios_count}
-          />
-          <ActionBtn
-            icon={<Share2 size={16} aria-hidden />}
-            label="Compartilhar"
-            count={ato.compartilhamentos_count}
-          />
-        </div>
+        <ApenasColaborador>
+          <div className="mt-4 flex items-center gap-1 border-t border-border pt-3 -mb-1">
+            <ActionBtn
+              icon={<Heart size={16} aria-hidden />}
+              label="Curtir"
+              count={ato.curtidas_count}
+            />
+            <ActionBtn
+              icon={<MessageCircle size={16} aria-hidden />}
+              label="Comentar"
+              count={ato.comentarios_count}
+            />
+            <ActionBtn
+              icon={<Share2 size={16} aria-hidden />}
+              label="Compartilhar"
+              count={ato.compartilhamentos_count}
+            />
+          </div>
+        </ApenasColaborador>
       </div>
     </article>
   );

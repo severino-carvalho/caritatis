@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "../lib/theme";
+import { UserProvider } from "../contexts/UserContext";
 
 function NotFoundComponent() {
   return (
@@ -115,11 +117,23 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const navigate = useNavigate();
+  const pathname = router.state.location.pathname;
+
+  useEffect(() => {
+    const isAuth = typeof window !== "undefined" && sessionStorage.getItem("reuni_auth") === "true";
+    if (!isAuth && pathname !== "/login") {
+      navigate({ to: "/login" });
+    }
+  }, [pathname, navigate]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <Outlet />
+        <UserProvider>
+          <Outlet />
+        </UserProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

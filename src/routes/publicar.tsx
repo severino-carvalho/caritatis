@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Calendar, HandHeart, ImagePlus, MapPin, Search, Sprout } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
@@ -8,6 +8,10 @@ import { atos, CATEGORIAS } from "@/data/mocks";
 import type { Categoria, TipoAto } from "@/data/types";
 
 export const Route = createFileRoute("/publicar")({
+  beforeLoad: () => {
+    const perfil = typeof window !== "undefined" ? sessionStorage.getItem("reuni_perfil") : null;
+    if (perfil !== "instituicao") throw redirect({ to: "/" });
+  },
   head: () => ({
     meta: [
       { title: "Publicar um ato — reuni" },

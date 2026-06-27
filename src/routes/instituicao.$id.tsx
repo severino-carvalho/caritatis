@@ -1,12 +1,13 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { MessageSquare } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { AtoCard } from "@/components/AtoCard";
 import { Avatar } from "@/components/ui/ReuniAvatar";
 import { Button } from "@/components/ui/ReuniButton";
 import { VerifiedBadge } from "@/components/ui/ReuniVerifiedBadge";
+import { ApenasColaborador } from "@/components/guards/ApenasColaborador";
 import { atos, instituicoes } from "@/data/mocks";
+import type { Instituicao } from "@/data/types";
 
 export const Route = createFileRoute("/instituicao/$id")({
   head: ({ params }) => {
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/instituicao/$id")({
       <p className="text-sm text-muted-foreground">Instituição não encontrada.</p>
     </AppShell>
   ),
-  loader: ({ params }) => {
+  loader: ({ params }): Instituicao => {
     const inst = instituicoes.find((i) => i.id === params.id);
     if (!inst) throw notFound();
     return inst;
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/instituicao/$id")({
 });
 
 function PerfilInstituicao() {
-  const inst = Route.useLoaderData();
+  const inst = Route.useLoaderData() as Instituicao;
   const [tab, setTab] = useState<"atos" | "colab">("atos");
   const [seguindo, setSeguindo] = useState(false);
 
@@ -64,17 +65,16 @@ function PerfilInstituicao() {
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">{inst.area_atuacao}</p>
               </div>
-              <div className="mt-4 flex gap-2 sm:mt-0 sm:pb-2">
-                <Button
-                  variant={seguindo ? "outline" : "primary"}
-                  onClick={() => setSeguindo((s) => !s)}
-                >
-                  {seguindo ? "Seguindo" : "Seguir"}
-                </Button>
-                <Button variant="outline">
-                  <MessageSquare size={14} aria-hidden /> Mensagem
-                </Button>
-              </div>
+              <ApenasColaborador>
+                <div className="mt-4 flex gap-2 sm:mt-0 sm:pb-2">
+                  <Button
+                    variant={seguindo ? "outline" : "primary"}
+                    onClick={() => setSeguindo((s) => !s)}
+                  >
+                    {seguindo ? "Seguindo" : "Seguir"}
+                  </Button>
+                </div>
+              </ApenasColaborador>
             </div>
 
             <p className="mt-5 max-w-2xl text-sm text-foreground/90">{inst.descricao}</p>

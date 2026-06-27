@@ -6,7 +6,8 @@ import { AtoCard } from "@/components/AtoCard";
 import { Avatar } from "@/components/ui/ReuniAvatar";
 import { Button } from "@/components/ui/ReuniButton";
 import { CategoryPill } from "@/components/ui/ReuniCategoryPill";
-import { CATEGORIAS, atos, usuarioLogado } from "@/data/mocks";
+import { ApenasInstituicao } from "@/components/guards/ApenasInstituicao";
+import { atos, CATEGORIAS, usuarioLogado } from "@/data/mocks";
 import type { Categoria } from "@/data/types";
 
 export const Route = createFileRoute("/")({
@@ -32,39 +33,40 @@ function FeedPage() {
   return (
     <AppShell>
       <div className="space-y-4">
-        {/* Composer */}
-        <section className="rounded-2xl border border-border bg-card p-5">
-          <div className="flex items-start gap-3">
-            <Avatar src={usuarioLogado.avatar_url} alt={usuarioLogado.nome} size={44} />
-            <div className="flex-1 min-w-0">
-              <textarea
-                placeholder="Publicar um ato... O que sua comunidade precisa hoje?"
-                aria-label="Publicar um ato"
-                rows={2}
-                className="block w-full resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-              />
-              <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-                <div className="flex items-center gap-1">
-                  <button
-                    aria-label="Adicionar foto"
-                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
-                  >
-                    <Image size={14} aria-hidden /> Foto
-                  </button>
-                  <button
-                    aria-label="Adicionar localização"
-                    className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
-                  >
-                    <MapPin size={14} aria-hidden /> Local
-                  </button>
+        <ApenasInstituicao>
+          <section className="rounded-2xl border border-border bg-card p-5">
+            <div className="flex items-start gap-3">
+              <Avatar src={usuarioLogado.avatar_url} alt={usuarioLogado.nome} size={44} />
+              <div className="flex-1 min-w-0">
+                <textarea
+                  placeholder="Publicar um ato... O que sua comunidade precisa hoje?"
+                  aria-label="Publicar um ato"
+                  rows={2}
+                  className="block w-full resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                />
+                <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+                  <div className="flex items-center gap-1">
+                    <button
+                      aria-label="Adicionar foto"
+                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+                    >
+                      <Image size={14} aria-hidden /> Foto
+                    </button>
+                    <button
+                      aria-label="Adicionar localização"
+                      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+                    >
+                      <MapPin size={14} aria-hidden /> Local
+                    </button>
+                  </div>
+                  <Button size="sm">
+                    <Send size={14} aria-hidden /> Publicar
+                  </Button>
                 </div>
-                <Button size="sm">
-                  <Send size={14} aria-hidden /> Publicar
-                </Button>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </ApenasInstituicao>
 
         {/* Filtros */}
         <section className="-mx-4 px-4 md:mx-0 md:px-0">
@@ -97,7 +99,7 @@ function FeedPage() {
           ))}
           {lista.length === 0 && (
             <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
-              Nenhum ato nesta categoria ainda. Que tal publicar o primeiro?
+              Nenhum ato nesta categoria ainda.
             </div>
           )}
         </section>
