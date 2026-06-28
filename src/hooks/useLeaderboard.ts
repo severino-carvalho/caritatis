@@ -7,7 +7,6 @@ function mapEntry(e: LeaderboardEntryApi): LeaderboardEntry {
   return {
     id: String(e.colaboradorId),
     nome: e.nome,
-    avatarUrl: `https://i.pravatar.cc/40?u=${e.colaboradorId}`,
     pontos_total: e.pontosTotal,
     ofensiva_atual: e.ofensivaAtual,
     posicao: e.posicao,

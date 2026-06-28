@@ -108,7 +108,6 @@ function FeedPage() {
                       : "bg-surface border border-border text-foreground/80 hover:text-foreground"
                   }`}
                 >
-                  {c.icone && <span aria-hidden>{c.icone}</span>}
                   {c.nome}
                 </button>
               );

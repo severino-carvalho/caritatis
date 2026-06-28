@@ -36,13 +36,12 @@ export function useUsuarioInfo() {
 
   const email = usuarioBackend?.email ?? "";
   const nome = isInstituicao ? (instituicaoQuery.data?.razaoSocial ?? email) : email;
-  const avatarUrl = `https://i.pravatar.cc/200?u=${email || "anon"}`;
 
   return {
     isInstituicao,
     email,
     nome,
-    avatarUrl,
+    avatarUrl: undefined,
     papel: usuarioBackend?.papel ?? "comum",
     tipoLabel: isInstituicao ? "Instituição" : "Pessoa Física",
     instituicao: instituicaoQuery.data,

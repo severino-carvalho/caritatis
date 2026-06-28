@@ -6,18 +6,7 @@ import type {
   Instituicao,
   LeaderboardData,
   PostagemResponse,
-  Usuario,
 } from "./types";
-
-export const CATEGORIAS: Categoria[] = [
-  "Doação de Alimentos",
-  "Saúde",
-  "Abrigo",
-  "Arrecadação Financeira",
-  "Educação",
-  "Vestuário",
-  "Meio Ambiente",
-];
 
 export const categoriaColor: Record<Categoria, string> = {
   "Doação de Alimentos": "cat-alimentos",
@@ -27,19 +16,6 @@ export const categoriaColor: Record<Categoria, string> = {
   Educação: "cat-educacao",
   Vestuário: "cat-vestuario",
   "Meio Ambiente": "cat-ambiente",
-};
-
-export const usuarioLogado: Usuario = {
-  id: "u-1",
-  nome: "Marina Albuquerque",
-  tipo: "pessoa_fisica",
-  avatar_url: "https://i.pravatar.cc/200?img=47",
-  papel: "Voluntária • Natal, RN",
-};
-
-export const usuarioStats = {
-  atos_publicados: 12,
-  seguindo: 38,
 };
 
 export const instituicoes: Instituicao[] = [

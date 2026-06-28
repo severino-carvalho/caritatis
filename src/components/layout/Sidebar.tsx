@@ -57,7 +57,7 @@ export function Sidebar() {
         {/* Profile card */}
         <div className="rounded-2xl border border-border bg-card p-5">
           <div className="flex flex-col items-center text-center">
-            <Avatar src={info.avatarUrl} alt={info.nome} size={72} ring />
+            <Avatar src={info?.avatarUrl} alt={info.nome} size={72} ring />
             <h2 className="mt-3 max-w-full truncate font-display text-base font-bold text-foreground">
               {info.nome}
             </h2>

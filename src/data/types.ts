@@ -200,7 +200,7 @@ export interface Page<T> {
 export interface LeaderboardEntry {
   id: string;
   nome: string;
-  avatarUrl: string;
+  avatarUrl?: string;
   pontos_total: number;
   ofensiva_atual: number;
   posicao: number;
