@@ -2,6 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { login } from "@/services/auth";
+import { perfilDeUsuario } from "@/contexts/UserContext";
+import { useUser } from "@/contexts/UserContext";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -12,6 +14,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const navigate = useNavigate();
+  const { setPerfil } = useUser();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -23,7 +26,8 @@ function LoginPage() {
     setErro("");
     setCarregando(true);
     try {
-      await login({ email, senha });
+      const response = await login({ email, senha });
+      setPerfil(perfilDeUsuario(response.usuario));
       navigate({ to: "/" });
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Erro ao entrar. Tente novamente.");

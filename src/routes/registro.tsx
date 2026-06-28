@@ -2,6 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Building2, Camera, Eye, EyeOff, User, X } from "lucide-react";
 import { registrarColaborador, registrarInstituicao } from "@/services/auth";
+import { perfilDeUsuario } from "@/contexts/UserContext";
+import { useUser } from "@/contexts/UserContext";
 
 export const Route = createFileRoute("/registro")({
   head: () => ({
@@ -138,6 +140,7 @@ function LogoMobile() {
 
 function RegistroPage() {
   const navigate = useNavigate();
+  const { setPerfil } = useUser();
   const [passo, setPasso] = useState<1 | 2>(1);
   const [tipo, setTipo] = useState<TipoConta>(null);
   const [erro, setErro] = useState("");
@@ -168,7 +171,8 @@ function RegistroPage() {
     setErro("");
     setCarregando(true);
     try {
-      await registrarColaborador({ nomeCompleto, cpf, email: emailCol, senha: senhaCol }, fotoCol);
+      const response = await registrarColaborador({ nomeCompleto, cpf, email: emailCol, senha: senhaCol }, fotoCol);
+      setPerfil(perfilDeUsuario(response.usuario));
       navigate({ to: "/" });
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Erro ao cadastrar. Tente novamente.");
@@ -182,7 +186,7 @@ function RegistroPage() {
     setErro("");
     setCarregando(true);
     try {
-      await registrarInstituicao(
+      const response = await registrarInstituicao(
         {
           razaoSocial,
           documento,
@@ -192,6 +196,7 @@ function RegistroPage() {
         },
         logoInst,
       );
+      setPerfil(perfilDeUsuario(response.usuario));
       navigate({ to: "/" });
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Erro ao cadastrar. Tente novamente.");

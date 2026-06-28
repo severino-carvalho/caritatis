@@ -2,13 +2,11 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, LogOut, Mail, Moon, Search, Sun } from "lucide-react";
 import { useTheme } from "@/lib/theme";
-import { useUser } from "@/contexts/UserContext";
 import { logout } from "@/services/auth";
 import { countNaoLidas } from "@/services/mensagens";
 
 export function Header() {
   const { theme, toggle } = useTheme();
-  const { perfil, setPerfil } = useUser();
   const navigate = useNavigate();
 
   const { data: naoLidas = 0 } = useQuery({
@@ -50,21 +48,6 @@ export function Header() {
         </div>
 
         <div className="ml-auto flex items-center gap-1">
-          {import.meta.env.DEV && (
-            <button
-              title="Trocar perfil (dev)"
-              onClick={() =>
-                setPerfil(perfil === "pessoa_fisica" ? "instituicao" : "pessoa_fisica")
-              }
-              className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold transition-colors ${
-                perfil === "pessoa_fisica"
-                  ? "bg-secondary-soft text-secondary"
-                  : "bg-primary-soft text-primary"
-              }`}
-            >
-              {perfil === "pessoa_fisica" ? "PF" : "ONG"}
-            </button>
-          )}
           <Link
             to="/mensagens"
             aria-label="Mensagens"
