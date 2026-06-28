@@ -1,6 +1,7 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUsuarioSalvo } from "@/services/auth";
 import { Calendar, HandHeart, ImagePlus, MapPin, Sprout } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { PostagemCard } from "@/components/PostagemCard";
@@ -11,8 +12,9 @@ import type { PostagemResponse, TipoPostagem } from "@/data/types";
 
 export const Route = createFileRoute("/publicar")({
   beforeLoad: () => {
-    const perfil = typeof window !== "undefined" ? sessionStorage.getItem("reuni_perfil") : null;
-    if (perfil !== "instituicao") throw redirect({ to: "/" });
+    if (typeof window === "undefined") return;
+    const user = getUsuarioSalvo();
+    if (user?.tipo !== "instituicao") throw redirect({ to: "/" });
   },
   head: () => ({
     meta: [
@@ -51,7 +53,8 @@ function PublicarPage() {
     };
   }, [fotoPreviewUrl]);
 
-  const formValido = tipo !== null && titulo.trim() !== "" && descricao.trim() !== "" && categoriaId !== "";
+  const formValido =
+    tipo !== null && titulo.trim() !== "" && descricao.trim() !== "" && categoriaId !== "";
 
   const publicar = useMutation({
     mutationFn: () => {

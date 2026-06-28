@@ -12,14 +12,14 @@ interface UserContextValue {
 
 const UserContext = createContext<UserContextValue | null>(null);
 
-function perfilFromBackend(u: UsuarioResponse): "pessoa_fisica" | "instituicao" {
+export function perfilDeUsuario(u: UsuarioResponse): "pessoa_fisica" | "instituicao" {
   return u.tipo === "instituicao" ? "instituicao" : "pessoa_fisica";
 }
 
 export function UserProvider({ children }: { children: ReactNode }) {
   const [perfil, setPerfilState] = useState<"pessoa_fisica" | "instituicao">(() => {
     const usuarioBackend = getUsuarioSalvo();
-    if (usuarioBackend) return perfilFromBackend(usuarioBackend);
+    if (usuarioBackend) return perfilDeUsuario(usuarioBackend);
 
     const stored = typeof window !== "undefined" ? sessionStorage.getItem(PERFIL_KEY) : null;
     return stored === "instituicao" ? "instituicao" : "pessoa_fisica";
