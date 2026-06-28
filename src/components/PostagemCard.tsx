@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Calendar, Heart, MapPin, MessageCircle, Send, Share2 } from "lucide-react";
+import { Calendar, Heart, MapPin, MessageCircle, Send, Share2, Users } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import type { PostagemResponse, StatusPostagem } from "@/data/types";
 import { comentar, compartilhar, fetchComentarios, toggleCurtida } from "@/services/postagens";
@@ -43,6 +43,7 @@ export function PostagemCard({ postagem, compact }: Props) {
 
   const [curtido, setCurtido] = useState(false);
   const [curtidas, setCurtidas] = useState(postagem.curtidasCount);
+  const [participando, setParticipando] = useState(false);
   const [compartilhamentos, setCompartilhamentos] = useState(postagem.compartilhamentosCount);
   const [mostrarComentarios, setMostrarComentarios] = useState(false);
   const [comentarios, setComentarios] = useState(postagem.comentariosCount);
@@ -176,35 +177,51 @@ export function PostagemCard({ postagem, compact }: Props) {
 
         {/* Actions */}
         <ApenasColaborador>
-          <div className="mt-4 flex items-center gap-1 border-t border-border pt-3 -mb-1">
-            <ActionBtn
-              icon={
-                <Heart
-                  size={16}
-                  aria-hidden
-                  className={cn(curtido && "fill-current text-primary")}
-                />
-              }
-              label="Curtir"
-              count={curtidas}
-              active={curtido}
-              disabled={curtir.isPending}
-              onClick={() => curtir.mutate()}
-            />
-            <ActionBtn
-              icon={<MessageCircle size={16} aria-hidden />}
-              label="Comentar"
-              count={comentarios}
-              active={mostrarComentarios}
-              onClick={() => setMostrarComentarios((v) => !v)}
-            />
-            <ActionBtn
-              icon={<Share2 size={16} aria-hidden />}
-              label="Compartilhar"
-              count={compartilhamentos}
-              disabled={partilhar.isPending}
-              onClick={() => partilhar.mutate()}
-            />
+          <div className="mt-4 flex items-center gap-2 border-t border-border pt-3 -mb-1">
+            <div className="flex flex-1 items-center gap-1 min-w-0">
+              <ActionBtn
+                icon={
+                  <Heart
+                    size={16}
+                    aria-hidden
+                    className={cn(curtido && "fill-current text-primary")}
+                  />
+                }
+                label="Curtir"
+                count={curtidas}
+                active={curtido}
+                disabled={curtir.isPending}
+                onClick={() => curtir.mutate()}
+              />
+              <ActionBtn
+                icon={<MessageCircle size={16} aria-hidden />}
+                label="Comentar"
+                count={comentarios}
+                active={mostrarComentarios}
+                onClick={() => setMostrarComentarios((v) => !v)}
+              />
+              <ActionBtn
+                icon={<Share2 size={16} aria-hidden />}
+                label="Compartilhar"
+                count={compartilhamentos}
+                disabled={partilhar.isPending}
+                onClick={() => partilhar.mutate()}
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setParticipando((v) => !v)}
+              className={cn(
+                "inline-flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-colors",
+                participando
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "border border-primary text-primary hover:bg-primary/10",
+              )}
+            >
+              <Users size={14} aria-hidden />
+              {participando ? "Participando" : "Participar"}
+            </button>
           </div>
 
           {mostrarComentarios && (
