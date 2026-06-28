@@ -75,14 +75,68 @@ async function postAuth(
   return json;
 }
 
+async function postAuthMultipart(
+  path: string,
+  fields: Record<string, string | undefined>,
+  file: File | null,
+  fileParamName: string,
+  statusEsperado: number,
+): Promise<AuthResponse> {
+  const formData = new FormData();
+  for (const [key, value] of Object.entries(fields)) {
+    if (value !== undefined) formData.append(key, value);
+  }
+  if (file) formData.append(fileParamName, file);
+
+  const res = await fetch(`${BASE_URL}/api/auth${path}`, {
+    method: "POST",
+    body: formData,
+  });
+  if (res.status !== statusEsperado) throw new Error(await extrairMensagemErro(res));
+  const json: AuthResponse = await res.json();
+  salvarSessao(json);
+  return json;
+}
+
 export function login(data: LoginRequest): Promise<AuthResponse> {
   return postAuth("/login", data, 200);
 }
 
-export function registrarColaborador(data: RegistroColaboradorRequest): Promise<AuthResponse> {
-  return postAuth("/registro/colaborador", data, 201);
+export function registrarColaborador(
+  data: RegistroColaboradorRequest,
+  foto?: File | null,
+): Promise<AuthResponse> {
+  return postAuthMultipart(
+    "/registro/colaborador",
+    {
+      nomeCompleto: data.nomeCompleto,
+      cpf: data.cpf,
+      email: data.email,
+      senha: data.senha,
+      localizacao: data.localizacao,
+    },
+    foto ?? null,
+    "foto",
+    201,
+  );
 }
 
-export function registrarInstituicao(data: RegistroInstituicaoRequest): Promise<AuthResponse> {
-  return postAuth("/registro/instituicao", data, 201);
+export function registrarInstituicao(
+  data: RegistroInstituicaoRequest,
+  logo?: File | null,
+): Promise<AuthResponse> {
+  return postAuthMultipart(
+    "/registro/instituicao",
+    {
+      razaoSocial: data.razaoSocial,
+      documento: data.documento,
+      areaAtuacao: data.areaAtuacao,
+      email: data.email,
+      senha: data.senha,
+      localizacao: data.localizacao,
+    },
+    logo ?? null,
+    "logo",
+    201,
+  );
 }

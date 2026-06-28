@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowLeft, Building2, Eye, EyeOff, User } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowLeft, Building2, Camera, Eye, EyeOff, User, X } from "lucide-react";
 import { registrarColaborador, registrarInstituicao } from "@/services/auth";
 
 export const Route = createFileRoute("/registro")({
@@ -41,6 +41,67 @@ const inputClass =
   "h-11 w-full rounded-xl border border-border bg-surface px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50";
 
 const labelClass = "mb-1.5 block text-sm font-semibold text-foreground";
+
+interface SeletorFotoProps {
+  arquivo: File | null;
+  onChange: (file: File | null) => void;
+  label: string;
+  disabled?: boolean;
+}
+
+function SeletorFoto({ arquivo, onChange, label, disabled }: SeletorFotoProps) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!arquivo) { setPreview(null); return; }
+    const url = URL.createObjectURL(arquivo);
+    setPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [arquivo]);
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <p className="text-sm font-semibold text-foreground self-start">{label}</p>
+      <div className="relative">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={() => inputRef.current?.click()}
+          className="h-20 w-20 rounded-full border-2 border-dashed border-border bg-surface flex items-center justify-center overflow-hidden transition-colors hover:border-primary/60 disabled:opacity-50"
+        >
+          {preview ? (
+            <img src={preview} alt="preview" className="h-full w-full object-cover" />
+          ) : (
+            <Camera size={24} className="text-muted-foreground" />
+          )}
+        </button>
+        {arquivo && (
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => onChange(null)}
+            aria-label="Remover foto"
+            className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-destructive text-white shadow disabled:opacity-50"
+          >
+            <X size={11} />
+          </button>
+        )}
+      </div>
+      <p className="text-xs text-muted-foreground">
+        {arquivo ? arquivo.name : "Clique para adicionar (opcional)"}
+      </p>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.files?.[0] ?? null)}
+      />
+    </div>
+  );
+}
 
 function PainelEsquerdo() {
   return (
@@ -87,12 +148,14 @@ function RegistroPage() {
   const [cpf, setCpf] = useState("");
   const [emailCol, setEmailCol] = useState("");
   const [senhaCol, setSenhaCol] = useState("");
+  const [fotoCol, setFotoCol] = useState<File | null>(null);
 
   const [razaoSocial, setRazaoSocial] = useState("");
   const [documento, setDocumento] = useState("");
   const [areaAtuacao, setAreaAtuacao] = useState("");
   const [emailInst, setEmailInst] = useState("");
   const [senhaInst, setSenhaInst] = useState("");
+  const [logoInst, setLogoInst] = useState<File | null>(null);
 
   function voltarPasso1() {
     setPasso(1);
@@ -105,7 +168,7 @@ function RegistroPage() {
     setErro("");
     setCarregando(true);
     try {
-      await registrarColaborador({ nomeCompleto, cpf, email: emailCol, senha: senhaCol });
+      await registrarColaborador({ nomeCompleto, cpf, email: emailCol, senha: senhaCol }, fotoCol);
       navigate({ to: "/" });
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Erro ao cadastrar. Tente novamente.");
@@ -119,13 +182,16 @@ function RegistroPage() {
     setErro("");
     setCarregando(true);
     try {
-      await registrarInstituicao({
-        razaoSocial,
-        documento,
-        areaAtuacao: areaAtuacao || undefined,
-        email: emailInst,
-        senha: senhaInst,
-      });
+      await registrarInstituicao(
+        {
+          razaoSocial,
+          documento,
+          areaAtuacao: areaAtuacao || undefined,
+          email: emailInst,
+          senha: senhaInst,
+        },
+        logoInst,
+      );
       navigate({ to: "/" });
     } catch (err) {
       setErro(err instanceof Error ? err.message : "Erro ao cadastrar. Tente novamente.");
@@ -195,6 +261,12 @@ function RegistroPage() {
               <p className="mt-1 text-sm text-muted-foreground">Preencha seus dados</p>
 
               <form onSubmit={handleSubmitColaborador} className="mt-8 space-y-4">
+                <SeletorFoto
+                  arquivo={fotoCol}
+                  onChange={setFotoCol}
+                  label="Foto de perfil"
+                  disabled={carregando}
+                />
                 <div>
                   <label htmlFor="nome" className={labelClass}>Nome completo</label>
                   <input
@@ -285,6 +357,12 @@ function RegistroPage() {
               <p className="mt-1 text-sm text-muted-foreground">Preencha os dados da instituição</p>
 
               <form onSubmit={handleSubmitInstituicao} className="mt-8 space-y-4">
+                <SeletorFoto
+                  arquivo={logoInst}
+                  onChange={setLogoInst}
+                  label="Logo da instituição"
+                  disabled={carregando}
+                />
                 <div>
                   <label htmlFor="razao" className={labelClass}>Razão social</label>
                   <input
