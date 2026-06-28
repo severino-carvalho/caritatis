@@ -242,6 +242,19 @@ export interface GamificacaoPerfilResponse {
   bonusDiarioConcluido: boolean;
 }
 
+// --- DTOs de colaborador (backend) ---
+
+export interface ColaboradorPerfilResponse {
+  id: number;
+  email: string;
+  nomeCompleto: string;
+  localizacao: string | null;
+  fotoUrl: string | null;
+  pontosTotal: number;
+  ofensivaAtual: number;
+  ofensivaRecorde: number;
+}
+
 // --- DTOs de instituição (backend) ---
 
 export interface InstituicaoPerfilResponse {
