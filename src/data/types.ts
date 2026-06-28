@@ -251,6 +251,7 @@ export interface InstituicaoPerfilResponse {
   documento: string;
   areaAtuacao: string | null;
   localizacao: string | null;
+  logoUrl: string | null;
   statusVerificacao: StatusVerificacao;
   totalSeguidores: number;
 }

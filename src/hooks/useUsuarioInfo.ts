@@ -36,12 +36,13 @@ export function useUsuarioInfo() {
 
   const email = usuarioBackend?.email ?? "";
   const nome = isInstituicao ? (instituicaoQuery.data?.razaoSocial ?? email) : email;
+  const avatarUrl = isInstituicao ? (instituicaoQuery.data?.logoUrl ?? null) : null;
 
   return {
     isInstituicao,
     email,
     nome,
-    avatarUrl: undefined,
+    avatarUrl,
     papel: usuarioBackend?.papel ?? "comum",
     tipoLabel: isInstituicao ? "Instituição" : "Pessoa Física",
     instituicao: instituicaoQuery.data,
